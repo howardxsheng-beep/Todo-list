@@ -1,14 +1,22 @@
-import { useState } from 'react'
+import { Routes, Route, Navigate } from "react-router-dom"
 
+import Todo from "./pages/Todo";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 
 function App() {
 
 
   return (
-    <>
-      <h1 className='text-red-900'>test</h1>
-    </>
+    <Routes>
+      <Route path='/' element={ <Todo/> } />
+      <Route path='/register' element={ <Register/> } />
+      <Route path='/login' element={ <Login/> } />
+
+      <Route path="*" element={<Navigate to="/login" replace />} />
+
+    </Routes>
   )
 }
 
