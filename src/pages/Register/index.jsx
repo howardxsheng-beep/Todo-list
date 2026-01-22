@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import check from "../../assets/imgs/check.png";
 import hero from "../../assets/imgs/todo_board.png";
 import { signUp } from "../../api/auth";
@@ -57,6 +58,8 @@ export default function Register() {
         return ok;
     };
 
+    const navigate = useNavigate()
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setFormMsg("");
@@ -68,7 +71,8 @@ export default function Register() {
             const data = await signUp({ email, password, nickname });
 
             setFormMsg(`註冊成功（uid: ${data.uid}）`);
-            console.log(data)
+            navigate("/login")
+
 
         } catch (err) {
 
@@ -183,7 +187,9 @@ export default function Register() {
                                 {isLoading ? "註冊中..." : "註冊帳號"}
                             </button>
 
-                            <button type="button" className="mx-auto text-base font-bold cursor-pointer">
+                            <button type="button"
+                                className="mx-auto text-base font-bold cursor-pointer"
+                                onClick={() => navigate('/login')}>
                                 登入
                             </button>
                         </form>
