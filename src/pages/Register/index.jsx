@@ -187,9 +187,11 @@ export default function Register() {
                                 {isLoading ? "註冊中..." : "註冊帳號"}
                             </button>
 
-                            <button type="button"
+                            <button
+                                type="button"
                                 className="mx-auto text-base font-bold cursor-pointer"
-                                onClick={() => navigate('/login')}>
+                                onClick={() => navigate('/login')}
+                            >
                                 登入
                             </button>
                         </form>
