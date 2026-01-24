@@ -4,7 +4,8 @@ import plus from "../../assets/icons/plus_icon.svg";
 import cross from "../../assets/icons/cross.svg";
 import tick from "../../assets/icons/tick.svg";
 import empty from "../../assets/imgs/empty.png";
-
+import Cookies from "js-cookie";
+import { Navigate } from "react-router-dom";
 const mockTodos = [
     { id: "1", createTime: 1620281234, content: "把冰箱發霉的檸檬拿去丟", status: false },
     { id: "2", createTime: 1620282234, content: "打電話叫媽媽匯款給我", status: true },
@@ -15,9 +16,13 @@ const mockTodos = [
 ];
 
 export default function Todo() {
+    
     const [tab, setTab] = useState("all");
     const [todos, setTodos] = useState(mockTodos);
-
+    
+    const token = Cookies.get("token");
+    if (!token) return <Navigate to="/login" replace />;
+    
     const toggleTodo = (id) => {
         setTodos((prev) =>
             prev.map((t) => (t.id === id ? { ...t, status: !t.status } : t))
@@ -31,7 +36,6 @@ export default function Todo() {
     }, [tab, todos]);
 
     const activeCount = useMemo(() => todos.filter((t) => !t.status).length, [todos]);
-
     return (
         <main className="bg-yellow min-h-screen   md:bg-[linear-gradient(172.7deg,#FFD370_5.12%,#FFD370_53.33%,#FFD370_53.34%,#FFFFFF_53.45%,#FFFFFF_94.32%)]
         bg-position-[0_35px] bg-no-repeat">

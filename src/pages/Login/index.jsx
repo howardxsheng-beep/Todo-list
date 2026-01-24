@@ -1,7 +1,70 @@
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import check from "../../assets/imgs/check.png";
 import hero from "../../assets/imgs/todo_board.png"; 
+import { signIn } from "../../api/auth";
+import Cookies from 'js-cookie';
+
+
+
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [formMsg, setFormMsg] = useState("");
+  const [fieldErr, setFieldErr] = useState({
+    email: "",
+    password: "",
+  });
+
+  const validate = () => {
+    const next = { email: "", password: "" };
+    let ok = true;
+
+    if (!email.trim()) {
+      next.email = "Email 不可為空";
+      ok = false;
+    }
+
+    if (!password) {
+      next.password = "密碼不可為空";
+      ok = false;
+    } else if (password.length < 6) {
+      next.password = "密碼至少 6 碼";
+      ok = false;
+    }
+
+    setFieldErr(next);
+    return ok;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormMsg("");
+
+    if (!validate()) return;
+
+    setIsLoading(true);
+    try {
+      const data = await signIn({ email, password });
+      Cookies.set("token", data.token,{
+        expires: 7,
+        // secure:isHttps,
+        sameSite:"strict",
+      });
+
+      setFormMsg("登入成功");
+
+      navigate("/");
+    } catch (err) {
+      setFormMsg(err.message || "登入失敗");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <main className="bg-yellow pt-12 pb-33.5 md:pt-0 md:pb-0 md:min-h-screen md:flex md:items-center">
 
@@ -37,7 +100,9 @@ export default function Login() {
               最實用的線上代辦事項服務
             </p>
 
-            <form className="flex flex-col gap-4 max-w-78" >
+            <form 
+            className="flex flex-col gap-4 max-w-78"
+            onSubmit={handleSubmit} >
               <div className="flex flex-col ">
                 <label className="text-sm font-bold mb-1" htmlFor="email">
                   Email
@@ -46,12 +111,12 @@ export default function Login() {
                   id="email"
                   name="email"
                   type="email"
+                  value={email}
                   placeholder="請輸入Email"
                   className="bg-white rounded-[10px] py-3 px-4 w-full"
+                  onChange={(e)=>setEmail(e.target.value)}
                 />
-                <p className="text-warning text-sm font-bold mt-1.5">
-                  此欄位不可為空
-                </p>
+                <p className="text-warning text-sm font-bold mt-1.5">{fieldErr.email}</p>
               </div>
 
               <div className="flex flex-col">
@@ -62,21 +127,28 @@ export default function Login() {
                   id="password"
                   name="password"
                   type="password"
+                  value={password}
                   placeholder="請輸入密碼"
                   className="bg-white rounded-[10px] py-3 px-4 w-full"
+                  onChange={(e)=>setPassword(e.target.value)}
                 />
+                <p className="text-warning text-sm font-bold mt-1.5">{fieldErr.password}</p>
               </div>
+
+              {formMsg ? <p className="text-sm font-bold">{formMsg}</p> : null}
 
               <button
                 type="submit"
-                className="mx-auto text-base font-bold text-white rounded-[10px] bg-black py-3 px-12 text-center mt-4.5 mb-2 cursor-pointer"
+                className="mx-auto text-base font-bold text-white rounded-[10px] bg-black py-3 px-12 text-center mt-4.5 mb-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled ={isLoading}
               >
-                登入
+                {isLoading ? '登入中' : '登入'}
               </button>
 
               <button
                 type="button"
                 className="mx-auto text-base font-bold cursor-pointer"
+                onClick={() => navigate('/register')}
               >
                 註冊帳號
               </button>
