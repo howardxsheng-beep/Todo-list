@@ -53,7 +53,7 @@ export default function LoginForm({
           <p className="text-warning text-sm font-bold mt-1.5">{fieldErr.password}</p>
         </div>
 
-        {formMsg ? <p className="text-sm font-bold">{formMsg}</p> : null}
+        {formMsg ? <p className=" text-warning text-sm font-bold">{formMsg}</p> : null}
 
         <button
           type="submit"
