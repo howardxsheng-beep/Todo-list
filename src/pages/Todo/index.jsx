@@ -145,89 +145,105 @@ export default function Todo() {
 
                 {msg ? <p className="text-sm font-bold mt-2">{msg}</p> : null}
 
-                {filtered.length !== 0 ? (
-                    <section className="max-w-125 mx-auto mt-4 bg-white rounded-[10px] shadow overflow-hidden">
-                        <div className="grid grid-cols-3 text-center text-sm font-bold mb-1.75">
-                            <button
-                                type="button"
-                                onClick={() => setTab("all")}
-                                className={`py-4 border-b-2 text-sm ${tab === "all" ? "border-black text-black" : "border-black/10 text-black/40"
-                                    }`}
-                            >
-                                全部
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setTab("active")}
-                                className={`py-4 border-b-2 text-sm ${tab === "active" ? "border-black text-black" : "border-black/10 text-[#9F9A91]"
-                                    }`}
-                            >
-                                待完成
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setTab("done")}
-                                className={`py-4 border-b-2 text-sm ${tab === "done" ? "border-black text-black" : "border-[#E5E5E5] text-[#9F9A91]"
-                                    }`}
-                            >
-                                已完成
-                            </button>
-                        </div>
+                {todos.length !== 0 ? (
+                  <section className="max-w-125 mx-auto mt-4 bg-white rounded-[10px] shadow overflow-hidden">
+                    <div className="grid grid-cols-3 text-center text-sm font-bold mb-1.75">
+                      <button
+                        type="button"
+                        onClick={() => setTab("all")}
+                        className={`py-4 border-b-2 text-sm ${
+                          tab === "all" ? "border-black text-black" : "border-black/10 text-black/40"
+                        }`}
+                      >
+                        全部
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTab("active")}
+                        className={`py-4 border-b-2 text-sm ${
+                          tab === "active" ? "border-black text-black" : "border-black/10 text-[#9F9A91]"
+                        }`}
+                      >
+                        待完成
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTab("done")}
+                        className={`py-4 border-b-2 text-sm ${
+                          tab === "done" ? "border-black text-black" : "border-[#E5E5E5] text-[#9F9A91]"
+                        }`}
+                      >
+                        已完成
+                      </button>
+                    </div>
 
+                    {filtered.length !== 0 ? (
+                      <>
                         <ul className="px-4">
-                            {filtered.map((t) => (
-                                <li key={t.id} className="group relative flex items-stretch">
+                          {filtered.map((t) => (
+                            <li key={t.id} className="group relative flex items-stretch">
+                              <div className="flex flex-1 items-center justify-between py-4 border-b border-[#E5E5E5] md:pr-6">
+                                <div className="flex items-center gap-3">
+                                  <button
+                                    type="button"
+                                    onClick={() => toggleTodo(t.id)}
+                                    className={`w-5 h-5 flex items-center justify-center rounded border cursor-pointer
+                        ${t.status ? "border-transparent" : "border-black/30"}`}
+                                  >
+                                    {t.status ? <img src={tick} alt="" className="w-4 h-4" /> : null}
+                                  </button>
 
-                                    <div className="flex flex-1 items-center justify-between py-4 border-b border-[#E5E5E5] md:pr-6">
-                                        <div className="flex items-center gap-3">
+                                  <p className={`text-sm ${t.status ? "line-through text-[#9F9A91]" : "text-black"}`}>
+                                    {t.content}
+                                  </p>
+                                </div>
 
-                                            <button
-                                                type="button"
-                                                onClick={() => toggleTodo(t.id)}
-                                                className={`w-5 h-5 flex items-center justify-center rounded border cursor-pointer
-                                                ${t.status ? "border-transparent" : "border-black/30"}`}
-                                            >
-                                                {t.status ? <img src={tick} alt="" className="w-4 h-4" /> : null}
-                                            </button>
+                                <button
+                                  type="button"
+                                  className="md:hidden cursor-pointer"
+                                  aria-label="刪除"
+                                  onClick={() => handleDelete(t.id)}
+                                >
+                                  <img className="w-4 aspect-square" src={cross} alt="" />
+                                </button>
+                              </div>
 
-                                            <p className={`text-sm ${t.status ? "line-through text-[#9F9A91]" : "text-black"}`}>
-                                                {t.content}
-                                            </p>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            className="md:hidden cursor-pointer"
-                                            aria-label="刪除"
-                                            onClick={() => handleDelete(t.id)}
-                                        >
-                                            <img className="w-4 aspect-square" src={cross} alt="" />
-                                        </button>
-                                    </div>
-
-
-                                    <div className="hidden md:block md:absolute md:right-4 md:top-1/2 md:-translate-y-1/2">
-                                        <button
-                                            type="button"
-                                            className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
-                                            aria-label="刪除"
-                                            onClick={() => handleDelete(t.id)}
-                                        >
-                                            <img className="w-4 aspect-square" src={cross} alt="" />
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
+                              <div className="hidden md:block md:absolute md:right-4 md:top-1/2 md:-translate-y-1/2">
+                                <button
+                                  type="button"
+                                  className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                                  aria-label="刪除"
+                                  onClick={() => handleDelete(t.id)}
+                                >
+                                  <img className="w-4 aspect-square" src={cross} alt="" />
+                                </button>
+                              </div>
+                            </li>
+                          ))}
                         </ul>
 
                         <div className="px-4 py-6 md:mb-2 text-sm font-bold">
-                            {activeCount} 個待完成項目
+                          {activeCount} 個待完成項目
                         </div>
-                    </section>
-                )
-                    : (<div className="flex flex-col justify-center items-center">
-                        <p className="mt-15 mb-4 text-base font-normal">目前尚無代辦事項</p>
-                        <img className="max-w-30 md:max-w-60" src={empty} />
-                    </div>)}
+                      </>
+                    ) : (
+                      <div className="px-4 py-10 text-center">
+                        <p className="text-sm font-normal text-[#9F9A91]">
+                          {tab === "active"
+                            ? "目前沒有待完成事項"
+                            : tab === "done"
+                            ? "目前沒有已完成事項"
+                            : "目前沒有事項"}
+                        </p>
+                      </div>
+                    )}
+                  </section>
+                ) : (
+                  <div className="flex flex-col justify-center items-center">
+                    <p className="mt-15 mb-4 text-base font-normal">目前尚無代辦事項</p>
+                    <img className="max-w-30 md:max-w-60" src={empty} alt="" />
+                  </div>
+                )}
 
 
 
