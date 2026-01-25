@@ -18,16 +18,16 @@ export const deleteTodo = (id) => {
   });
 };
 
-export const updateTodo = (id, payload) => {
-  return request(`/todos/${id}`, {
-    method: "PUT", 
-    data: payload,
+export const toggleTodo = (id) => {
+  return request(`/todos/${id}/toggle`, {
+    method: "PATCH",
   });
 };
 
 
-export const toggleTodo = (id) => {
-  return request(`/todos/${id}/toggle`, {
-    method: "PATCH",
+export const updateTodo = (id, content) => {
+  return request(`/todos/${id}`, {
+    method: "PUT",
+    data: { content },
   });
 };

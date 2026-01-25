@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import check from "../../assets/imgs/check.png";
 import plus from "../../assets/icons/plus_icon.svg";
 import cross from "../../assets/icons/cross.svg";
@@ -6,7 +6,7 @@ import tick from "../../assets/icons/tick.svg";
 import empty from "../../assets/imgs/empty.png";
 import Cookies from "js-cookie";
 import { Navigate, useNavigate } from "react-router-dom";
-import { getTodos, createTodo, deleteTodo, toggleTodo } from "../../api/todos";
+import { getTodos, createTodo, deleteTodo, toggleTodo, updateTodo } from "../../api/todos";
 
 
 
@@ -20,19 +20,66 @@ export default function Todo() {
     const [todos, setTodos] = useState([]);
 
     const [newText, setNewText] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); 
+    const [isFetching, setIsFetching] = useState(true); 
     const [msg, setMsg] = useState("");
+    const [editingId, setEditingId] = useState(null);
+    const [editingText, setEditingText] = useState("");
+    const [editErr, setEditErr] = useState("");
+    const committingRef = useRef(false);
+    const startEdit = (todo) => {
+      setMsg("");
+      setEditingId(todo.id);
+      setEditingText(todo.content ?? "");
+      setEditErr("");
+    };
+
+    const cancelEdit = () => {
+      setEditingId(null);
+      setEditingText("");
+      setEditErr("");
+    };
+
+    const commitEdit = async (id) => {
+      if (committingRef.current) return;
+
+      const nextContent = editingText.trim();
+      if (!nextContent) {
+        setEditErr("待辦內容不可為空");
+        return;
+      }
+      setEditErr("");
+
+      committingRef.current = true;
+
+
+      const prevTodos = todos;
+      setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, content: nextContent } : t)));
+
+      try {
+        await updateTodo(id, nextContent);
+        cancelEdit();
+        await fetchTodos();
+      } catch (err) {
+        setMsg(err.message || "更新內容失敗");
+        setTodos(prevTodos);
+        cancelEdit();
+        await fetchTodos();
+      } finally {
+        committingRef.current = false;
+      }
+    };
 
     const fetchTodos = async () => {
       setMsg("");
-      setIsLoading(true);
+      setIsFetching(true);
       try {
         const res = await getTodos();
         setTodos(res?.data || []);
       } catch (err) {
         setMsg(err.message || "取得待辦失敗");
       } finally {
-        setIsLoading(false);
+        setIsFetching(false);
       }
     };
 
@@ -152,7 +199,11 @@ export default function Todo() {
 
                 {msg ? <p className="text-sm font-bold mt-2">{msg}</p> : null}
 
-                {todos.length !== 0 ? (
+                {isFetching ? (
+                  <div className="max-w-125 mx-auto mt-4 bg-white rounded-[10px] shadow py-10 text-center">
+                    <p className="text-sm font-bold">載入待辦事項中...</p>
+                  </div>
+                ) : todos.length !== 0 ? (
                   <section className="max-w-125 mx-auto mt-4 bg-white rounded-[10px] shadow overflow-hidden">
                     <div className="grid grid-cols-3 text-center text-sm font-bold mb-1.75">
                       <button
@@ -200,9 +251,40 @@ export default function Todo() {
                                     {t.status ? <img src={tick} alt="" className="w-4 h-4" /> : null}
                                   </button>
 
-                                  <p className={`text-sm ${t.status ? "line-through text-[#9F9A91]" : "text-black"}`}>
-                                    {t.content}
-                                  </p>
+                                  {editingId === t.id ? (
+                                    <div className="flex flex-col">
+                                      <input
+                                        className="text-sm w-full bg-transparent outline-none border-b border-black/20 focus:border-black"
+                                        value={editingText}
+                                        onChange={(e) => {
+                                          setEditingText(e.target.value);
+                                          if (editErr) setEditErr("");
+                                        }}
+                                        onKeyDown={(e) => {
+                                          if (e.key === "Enter") {
+                                            e.preventDefault();
+                                            commitEdit(t.id);
+                                          }
+                                          if (e.key === "Escape") {
+                                            e.preventDefault();
+                                            cancelEdit();
+                                          }
+                                        }}
+                                        onBlur={() => commitEdit(t.id)}
+                                        autoFocus
+                                        aria-label="編輯待辦內容"
+                                      />
+                                      {editErr ? <p className="mt-1 text-xs font-bold text-warning">{editErr}</p> : null}
+                                    </div>
+                                  ) : (
+                                    <p
+                                      className={`text-sm ${t.status ? "line-through text-[#9F9A91]" : "text-black"} cursor-pointer`}
+                                      title="點兩下編輯"
+                                      onDoubleClick={() => startEdit(t)}
+                                    >
+                                      {t.content}
+                                    </p>
+                                  )}
                                 </div>
 
                                 <button
@@ -251,11 +333,6 @@ export default function Todo() {
                     <img className="max-w-30 md:max-w-60" src={empty} alt="" />
                   </div>
                 )}
-
-
-
-
-
             </div>
         </main>
     );
