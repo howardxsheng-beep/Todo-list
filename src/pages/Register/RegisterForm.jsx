@@ -87,8 +87,9 @@ export default function RegisterForm({
           />
           <p className="text-warning text-sm font-bold mt-1.5">{fieldErr?.confirmPassword}</p>
         </div>
+        
 
-        {formMsg ? <p className="text-sm font-bold">{formMsg}</p> : null}
+        {formMsg ? <p className="text-warning text-sm font-bold ">{formMsg}</p> : null}
 
         <button
           type="submit"
