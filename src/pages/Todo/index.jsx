@@ -7,6 +7,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { getTodos, createTodo, deleteTodo, toggleTodo, updateTodo } from "../../api/todos";
 import TodoHeader from "./TodoHeader";
 import TodoCreateForm from "./TodoCreateForm";
+import TodoTabs from "./TodoTabs";
+import TodoTabEmpty from "./TodoTabEmpty";
 
 
 
@@ -173,32 +175,7 @@ export default function Todo() {
                     </div>
                 ) : todos.length !== 0 ? (
                     <section className="max-w-125 mx-auto mt-4 bg-white rounded-[10px] shadow overflow-hidden">
-                        <div className="grid grid-cols-3 text-center text-sm font-bold mb-1.75">
-                            <button
-                                type="button"
-                                onClick={() => setTab("all")}
-                                className={`py-4 border-b-2 text-sm ${tab === "all" ? "border-black text-black" : "border-black/10 text-black/40"
-                                    }`}
-                            >
-                                全部
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setTab("active")}
-                                className={`py-4 border-b-2 text-sm ${tab === "active" ? "border-black text-black" : "border-black/10 text-[#9F9A91]"
-                                    }`}
-                            >
-                                待完成
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setTab("done")}
-                                className={`py-4 border-b-2 text-sm ${tab === "done" ? "border-black text-black" : "border-[#E5E5E5] text-[#9F9A91]"
-                                    }`}
-                            >
-                                已完成
-                            </button>
-                        </div>
+                        <TodoTabs tab={tab} onChangeTab={setTab} />
 
                         {filtered.length !== 0 ? (
                             <>
@@ -281,15 +258,7 @@ export default function Todo() {
                                 </div>
                             </>
                         ) : (
-                            <div className="px-4 py-10 text-center">
-                                <p className="text-sm font-normal text-[#9F9A91]">
-                                    {tab === "active"
-                                        ? "目前沒有待完成事項"
-                                        : tab === "done"
-                                            ? "目前沒有已完成事項"
-                                            : "目前沒有事項"}
-                                </p>
-                            </div>
+                            <TodoTabEmpty tab={tab} />
                         )}
                     </section>
                 ) : (
