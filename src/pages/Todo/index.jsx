@@ -6,7 +6,7 @@ import tick from "../../assets/icons/tick.svg";
 import empty from "../../assets/imgs/empty.png";
 import Cookies from "js-cookie";
 import { Navigate, useNavigate } from "react-router-dom";
-import { getTodos, createTodo } from "../../api/todos";
+import { getTodos, createTodo, deleteTodo } from "../../api/todos";
 
 
 
@@ -81,8 +81,22 @@ export default function Todo() {
     const handleLogout = () => {
         Cookies.remove("token");
         Cookies.remove("nickname");
-        Cookies.remove("exp"); 
+        Cookies.remove("exp");
         navigate("/login");
+    };
+    const handleDelete = async (id) => {
+        setMsg("");
+        setIsLoading(true);
+        try {
+            await deleteTodo(id);
+
+            setTodos((prev) => prev.filter((t) => t.id !== id));
+
+        } catch (err) {
+            setMsg(err.message || "刪除失敗");
+        } finally {
+            setIsLoading(false);
+        }
     };
     return (
         <main className="bg-yellow min-h-screen   md:bg-[linear-gradient(172.7deg,#FFD370_5.12%,#FFD370_53.33%,#FFD370_53.34%,#FFFFFF_53.45%,#FFFFFF_94.32%)]
@@ -99,9 +113,9 @@ export default function Todo() {
                         <span className="text-base font-bold hidden md:block">
                             {nickname} 的待辦
                         </span>
-                        <button 
-                        onClick={handleLogout}
-                        type="button" className="text-base  cursor-pointer">
+                        <button
+                            onClick={handleLogout}
+                            type="button" className="text-base  cursor-pointer">
                             登出
                         </button>
                     </div>
@@ -184,7 +198,7 @@ export default function Todo() {
                                             type="button"
                                             className="md:hidden cursor-pointer"
                                             aria-label="刪除"
-
+                                            onClick={() => handleDelete(t.id)}
                                         >
                                             <img className="w-4 aspect-square" src={cross} alt="" />
                                         </button>
@@ -196,6 +210,7 @@ export default function Todo() {
                                             type="button"
                                             className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                                             aria-label="刪除"
+                                            onClick={() => handleDelete(t.id)}
                                         >
                                             <img className="w-4 aspect-square" src={cross} alt="" />
                                         </button>

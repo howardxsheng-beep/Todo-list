@@ -10,3 +10,12 @@ export const createTodo = (content) => {
     data: { content },
   });
 };
+
+
+export const deleteTodo = (id) => {
+  return request(`/todos/${id}`, {
+    
+    method: "DELETE" 
+    
+    });
+};
