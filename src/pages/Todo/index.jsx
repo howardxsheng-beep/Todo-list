@@ -1,5 +1,4 @@
 import { useMemo, useState, useEffect, useRef } from "react";
-import plus from "../../assets/icons/plus_icon.svg";
 import cross from "../../assets/icons/cross.svg";
 import tick from "../../assets/icons/tick.svg";
 import empty from "../../assets/imgs/empty.png";
@@ -7,6 +6,7 @@ import Cookies from "js-cookie";
 import { Navigate, useNavigate } from "react-router-dom";
 import { getTodos, createTodo, deleteTodo, toggleTodo, updateTodo } from "../../api/todos";
 import TodoHeader from "./TodoHeader";
+import TodoCreateForm from "./TodoCreateForm";
 
 
 
@@ -158,27 +158,12 @@ export default function Todo() {
 
                 <TodoHeader nickname={nickname} onLogout={handleLogout} />
 
-                <form
-                    className="max-w-125 mx-auto relative mt-4 md:mt-6"
+                <TodoCreateForm
+                    value={newText}
+                    onChange={(e) => setNewText(e.target.value)}
                     onSubmit={handleCreate}
-                >
-                    <input
-                        type="text"
-                        placeholder="新增待辦事項"
-                        className="w-full h-11.75 rounded-[10px] text-base bg-white pl-4 pr-14 shadow"
-                        value={newText}
-                        onChange={(e) => setNewText(e.target.value)}
-                        disabled={isLoading}
-                    />
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-[10px] bg-black text-white flex justify-center items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                        aria-label="新增待辦"
-                    >
-                        <img src={plus} alt="" className="w-5 h-5" />
-                    </button>
-                </form>
+                    disabled={isLoading}
+                />
 
                 {msg ? <p className="text-sm font-bold mt-2">{msg}</p> : null}
 
