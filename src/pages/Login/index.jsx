@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import check from "../../assets/imgs/check.png";
-import hero from "../../assets/imgs/todo_board.png"; 
+import hero from "../../assets/imgs/todo_board.png";
 import { signIn } from "../../api/auth";
 import Cookies from 'js-cookie';
 
@@ -49,11 +49,16 @@ export default function Login() {
     setIsLoading(true);
     try {
       const data = await signIn({ email, password });
-      Cookies.set("token", data.token,{
+      Cookies.set("token", data.token, {
         expires: 7,
         // secure:isHttps,
-        sameSite:"strict",
+        sameSite: "strict",
       });
+      Cookies.set("nickname", data.nickname, {
+        expires: 7,
+        sameSite: "strict",
+      });
+      Cookies.set("exp", String(data.exp), { expires: 7, sameSite: "strict" });
 
       setFormMsg("登入成功");
 
@@ -70,15 +75,15 @@ export default function Login() {
 
       <div className="w-full max-w-[816px] mx-auto px-6 md:px-0 ">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_304px] items-center gap-10 md:gap-26.5">
-          
+
 
           <section className="hidden md:flex flex-col justify-center" aria-label="Login visual">
             <div className="flex justify-center items-center mb-[21px]">
-            <img src={check} alt="Todo list logo" className="w-10 aspect-square" />
+              <img src={check} alt="Todo list logo" className="w-10 aspect-square" />
               <h1 className=" md:text-[32px] font-bold font-baloo  ">
                 ONLINE TODO LIST
               </h1>
-              </div>
+            </div>
             <img
               src={hero}
               alt="todo illustration"
@@ -89,10 +94,10 @@ export default function Login() {
           <section className="w-full max-w-[312px] mx-auto md:max-w-[304px] md:mx-0" aria-label="Login form">
             <div className="flex items-center justify-center gap-2 mb-4 md:mb-9">
               <div className="md:hidden flex items-center">
-              <img src={check} alt="Todo list logo" className="w-10 aspect-square" />
-              <h1 className="text-[28px] md:text-[32px] font-bold font-baloo ">
-                ONLINE TODO LIST
-              </h1>
+                <img src={check} alt="Todo list logo" className="w-10 aspect-square" />
+                <h1 className="text-[28px] md:text-[32px] font-bold font-baloo ">
+                  ONLINE TODO LIST
+                </h1>
               </div>
             </div>
 
@@ -100,9 +105,9 @@ export default function Login() {
               最實用的線上代辦事項服務
             </p>
 
-            <form 
-            className="flex flex-col gap-4 max-w-78"
-            onSubmit={handleSubmit} >
+            <form
+              className="flex flex-col gap-4 max-w-78"
+              onSubmit={handleSubmit} >
               <div className="flex flex-col ">
                 <label className="text-sm font-bold mb-1" htmlFor="email">
                   Email
@@ -114,7 +119,7 @@ export default function Login() {
                   value={email}
                   placeholder="請輸入Email"
                   className="bg-white rounded-[10px] py-3 px-4 w-full"
-                  onChange={(e)=>setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <p className="text-warning text-sm font-bold mt-1.5">{fieldErr.email}</p>
               </div>
@@ -130,7 +135,7 @@ export default function Login() {
                   value={password}
                   placeholder="請輸入密碼"
                   className="bg-white rounded-[10px] py-3 px-4 w-full"
-                  onChange={(e)=>setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <p className="text-warning text-sm font-bold mt-1.5">{fieldErr.password}</p>
               </div>
@@ -140,7 +145,7 @@ export default function Login() {
               <button
                 type="submit"
                 className="mx-auto text-base font-bold text-white rounded-[10px] bg-black py-3 px-12 text-center mt-4.5 mb-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled ={isLoading}
+                disabled={isLoading}
               >
                 {isLoading ? '登入中' : '登入'}
               </button>
