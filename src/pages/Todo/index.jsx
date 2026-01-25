@@ -1,28 +1,28 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import check from "../../assets/imgs/check.png";
 import plus from "../../assets/icons/plus_icon.svg";
 import cross from "../../assets/icons/cross.svg";
 import tick from "../../assets/icons/tick.svg";
 import empty from "../../assets/imgs/empty.png";
 import Cookies from "js-cookie";
-import { Navigate } from "react-router-dom";
-const mockTodos = [
-    { id: "1", createTime: 1620281234, content: "把冰箱發霉的檸檬拿去丟", status: false },
-    { id: "2", createTime: 1620282234, content: "打電話叫媽媽匯款給我", status: true },
-    { id: "3", createTime: 1620283234, content: "整理電腦資料夾", status: false },
-    { id: "4", createTime: 1620284234, content: "繳電費水費瓦斯費", status: true },
-    { id: "5", createTime: 1620285234, content: "約vicky禮拜三泡溫泉", status: false },
-    { id: "6", createTime: 1620285334, content: "約vicky禮拜五泡溫泉", status: false }
-];
+import { Navigate, useNavigate } from "react-router-dom";
+import { getTodos, createTodo } from "../../api/todos";
+
+
+
 
 export default function Todo() {
-    
-    const [tab, setTab] = useState("all");
-    const [todos, setTodos] = useState(mockTodos);
-    
+
     const token = Cookies.get("token");
     if (!token) return <Navigate to="/login" replace />;
-    
+
+    const [tab, setTab] = useState("all");
+    const [todos, setTodos] = useState([]);
+
+    const [newText, setNewText] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [msg, setMsg] = useState("");
+
     const toggleTodo = (id) => {
         setTodos((prev) =>
             prev.map((t) => (t.id === id ? { ...t, status: !t.status } : t))
@@ -35,7 +35,55 @@ export default function Todo() {
         return todos;
     }, [tab, todos]);
 
+    const navigate = useNavigate();
     const activeCount = useMemo(() => todos.filter((t) => !t.status).length, [todos]);
+    const nickname = Cookies.get("nickname") || "使用者";
+
+    useEffect(() => {
+        const fetchTodos = async () => {
+            setMsg("");
+            setIsLoading(true);
+            try {
+                const res = await getTodos();
+                setTodos(res?.data || []);
+            } catch (err) {
+                setMsg(err.message || "取得待辦失敗");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchTodos();
+    }, []);
+
+    const handleCreate = async (e) => {
+        e.preventDefault();
+        setMsg("");
+
+        const text = newText.trim();
+        if (!text) return;
+
+        setIsLoading(true);
+        try {
+            await createTodo(text);
+            setNewText("");
+
+
+            const res = await getTodos();
+            setTodos(res?.data || []);
+        } catch (err) {
+            setMsg(err.message || "新增失敗");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleLogout = () => {
+        Cookies.remove("token");
+        Cookies.remove("nickname");
+        Cookies.remove("exp"); 
+        navigate("/login");
+    };
     return (
         <main className="bg-yellow min-h-screen   md:bg-[linear-gradient(172.7deg,#FFD370_5.12%,#FFD370_53.33%,#FFD370_53.34%,#FFFFFF_53.45%,#FFFFFF_94.32%)]
         bg-position-[0_35px] bg-no-repeat">
@@ -48,8 +96,12 @@ export default function Todo() {
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <span className="text-base font-bold hidden md:block">王小明的待辦</span>
-                        <button type="button" className="text-base  cursor-pointer">
+                        <span className="text-base font-bold hidden md:block">
+                            {nickname} 的待辦
+                        </span>
+                        <button 
+                        onClick={handleLogout}
+                        type="button" className="text-base  cursor-pointer">
                             登出
                         </button>
                     </div>
@@ -57,21 +109,27 @@ export default function Todo() {
 
                 <form
                     className="max-w-125 mx-auto relative mt-4 md:mt-6"
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={handleCreate}
                 >
                     <input
                         type="text"
                         placeholder="新增待辦事項"
                         className="w-full h-11.75 rounded-[10px] text-base bg-white pl-4 pr-14 shadow"
+                        value={newText}
+                        onChange={(e) => setNewText(e.target.value)}
+                        disabled={isLoading}
                     />
                     <button
                         type="submit"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-[10px] bg-black text-white flex justify-center items-center cursor-pointer"
+                        disabled={isLoading}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-[10px] bg-black text-white flex justify-center items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         aria-label="新增待辦"
                     >
                         <img src={plus} alt="" className="w-5 h-5" />
                     </button>
                 </form>
+
+                {msg ? <p className="text-sm font-bold mt-2">{msg}</p> : null}
 
                 {filtered.length !== 0 ? (
                     <section className="max-w-125 mx-auto mt-4 bg-white rounded-[10px] shadow overflow-hidden">
@@ -126,7 +184,7 @@ export default function Todo() {
                                             type="button"
                                             className="md:hidden cursor-pointer"
                                             aria-label="刪除"
-                                        // onClick={() => deleteTodo(t.id)}
+
                                         >
                                             <img className="w-4 aspect-square" src={cross} alt="" />
                                         </button>
