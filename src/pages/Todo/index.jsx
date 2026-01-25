@@ -6,7 +6,7 @@ import tick from "../../assets/icons/tick.svg";
 import empty from "../../assets/imgs/empty.png";
 import Cookies from "js-cookie";
 import { Navigate, useNavigate } from "react-router-dom";
-import { getTodos, createTodo, deleteTodo } from "../../api/todos";
+import { getTodos, createTodo, deleteTodo, toggleTodo } from "../../api/todos";
 
 
 
@@ -23,10 +23,30 @@ export default function Todo() {
     const [isLoading, setIsLoading] = useState(false);
     const [msg, setMsg] = useState("");
 
-    const toggleTodo = (id) => {
-        setTodos((prev) =>
-            prev.map((t) => (t.id === id ? { ...t, status: !t.status } : t))
-        );
+    const fetchTodos = async () => {
+      setMsg("");
+      setIsLoading(true);
+      try {
+        const res = await getTodos();
+        setTodos(res?.data || []);
+      } catch (err) {
+        setMsg(err.message || "取得待辦失敗");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const handleToggle = async (id) => {
+
+      setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, status: !t.status } : t)));
+
+      try {
+        await toggleTodo(id);
+        await fetchTodos();
+      } catch (err) {
+        setMsg(err.message || "更新狀態失敗");
+        await fetchTodos();
+      }
     };
 
     const filtered = useMemo(() => {
@@ -40,20 +60,7 @@ export default function Todo() {
     const nickname = Cookies.get("nickname") || "使用者";
 
     useEffect(() => {
-        const fetchTodos = async () => {
-            setMsg("");
-            setIsLoading(true);
-            try {
-                const res = await getTodos();
-                setTodos(res?.data || []);
-            } catch (err) {
-                setMsg(err.message || "取得待辦失敗");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchTodos();
+      fetchTodos();
     }, []);
 
     const handleCreate = async (e) => {
@@ -69,8 +76,7 @@ export default function Todo() {
             setNewText("");
 
 
-            const res = await getTodos();
-            setTodos(res?.data || []);
+            await fetchTodos();
         } catch (err) {
             setMsg(err.message || "新增失敗");
         } finally {
@@ -91,6 +97,7 @@ export default function Todo() {
             await deleteTodo(id);
 
             setTodos((prev) => prev.filter((t) => t.id !== id));
+            await fetchTodos();
 
         } catch (err) {
             setMsg(err.message || "刪除失敗");
@@ -186,7 +193,7 @@ export default function Todo() {
                                 <div className="flex items-center gap-3">
                                   <button
                                     type="button"
-                                    onClick={() => toggleTodo(t.id)}
+                                    onClick={() => handleToggle(t.id)}
                                     className={`w-5 h-5 flex items-center justify-center rounded border cursor-pointer
                         ${t.status ? "border-transparent" : "border-black/30"}`}
                                   >
