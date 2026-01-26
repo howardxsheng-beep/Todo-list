@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
 import LoginVisual from "./LoginVisual";
 
 export default function AuthedLoginGuard({ seconds = 3 }) {
   const navigate = useNavigate();
+  const [left, setLeft] = useState(seconds);
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -15,11 +15,14 @@ export default function AuthedLoginGuard({ seconds = 3 }) {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/", { replace: true });
-    }, seconds * 1000);
+    setLeft(seconds);
+    const t1 = setInterval(() => setLeft((s) => Math.max(0, s - 1)), 1000);
+    const t2 = setTimeout(() => navigate("/", { replace: true }), seconds * 1000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearInterval(t1);
+      clearTimeout(t2);
+    };
   }, [navigate, seconds]);
 
   return (
@@ -29,12 +32,10 @@ export default function AuthedLoginGuard({ seconds = 3 }) {
           <LoginVisual />
 
           <section className="w-full max-w-78 mx-auto md:max-w-76 md:mx-0">
-            <p className="text-xl font-bold text-center mb-2 md:text-2xl md:text-start">
-              您已登入
-            </p>
+            <p className="text-xl font-bold text-center mb-2 md:text-2xl md:text-start">您已登入</p>
 
             <p className="text-sm font-bold text-[#9F9A91] mb-6 md:mb-8">
-              將在 {seconds} 秒後自動前往待辦清單
+              將在 {left} 秒後自動前往待辦清單
             </p>
 
             <div className="flex flex-col gap-4">
