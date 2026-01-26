@@ -26,8 +26,8 @@ export default function Register() {
   });
 
   return (
-    <main className="bg-yellow pt-12 pb-7.25 md:pt-0 md:pb-0 md:min-h-screen md:flex md:items-center">
-      <div className="w-full max-w-[816px] flex items-center justify-center mx-auto px-6 md:px-0">
+    <main className="bg-yellow pt-12 pb-7.25 md:pt-0 md:pb-0 min-h-screen md:flex md:items-center">
+      <div className="w-full max-w-[816px] flex items-center justify-center mx-auto px-6 md:px-0 md:py-10">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_304px] items-center gap-10 md:gap-26.5">
           <RegisterVisual />
 
