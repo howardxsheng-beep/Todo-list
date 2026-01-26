@@ -1,1 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Thambi+2:wght@400..800&family=Noto+Sans+TC:wght@100..900&display=swap');
 @import "tailwindcss";
+
+body {
+    font-family: "Noto Sans TC", "Noto Sans", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--color-black);
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.font-baloo {
+  font-family: "Baloo Thambi 2", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+@theme{
+  
+  --color-black: #333333;
+  --color-white: #FFFFFF;
+  --color-warning: #D87355;
+  --color-yellow: #FFD370;
+}

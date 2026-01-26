@@ -1,15 +1,22 @@
-import { useState } from 'react'
+import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 
+import Todo from "./pages/Todo";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
-
-function App() {
-
-
+export default function App() {
   return (
-    <>
-      <h1 className='text-red-900'>test</h1>
-    </>
-  )
-}
+    <Routes>
+      <Route element={<PublicOnlyRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
 
-export default App
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<Todo />} />
+      </Route>
+    </Routes>
+  );
+}
