@@ -1,11 +1,18 @@
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 import LoginForm from "./LoginForm";
 import useLoginActions from "./useLoginActions";
 import LoginVisual from "./LoginVisual";
+import AuthedLoginGuard from "./AuthedLoginGuard";
 
 export default function Login() {
   const navigate = useNavigate();
+  const token = Cookies.get("token");
+
+
+  if (token) return <AuthedLoginGuard seconds={3} />;
+
 
   const {
     email,
@@ -22,11 +29,9 @@ export default function Login() {
 
   return (
     <main className="bg-yellow pt-12 pb-33.5 md:pt-0 md:pb-0 md:min-h-screen md:flex md:items-center">
-      <div className="w-full max-w-[816px] mx-auto px-6 md:px-0 ">
+      <div className="w-full max-w-204 mx-auto px-6 md:px-0">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_304px] items-center gap-10 md:gap-26.5">
-
           <LoginVisual />
-
 
           <LoginForm
             email={email}
