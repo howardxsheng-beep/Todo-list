@@ -10,7 +10,7 @@ export default function TodoHeader({ nickname, onLogout }) {
 
       <div className="flex items-center gap-6">
         <span className="text-base font-bold hidden md:block">{nickname} 的待辦</span>
-        <button type="button" onClick={onLogout} className="text-base cursor-pointer">
+        <button type="button" onClick={onLogout} className=" text-sm md:text-base cursor-pointer">
           登出
         </button>
       </div>
