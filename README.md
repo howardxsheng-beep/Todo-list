@@ -53,7 +53,7 @@ https://howardxsheng-beep.github.io/Todo-list/
 ---
 
 ## 專案結構說明
-
+```
 todo-list/
 │
 ├─ public/                     # 放網站固定用的靜態檔（favicon / og-image ）
@@ -101,7 +101,7 @@ todo-list/
 ├─ package.json                # 套件與 scripts（build/deploy）
 ├─ eslint.config.js            # ESLint 設定
 └─ package-lock.json
-
+```
 ---
 
 ## 專案啟動
