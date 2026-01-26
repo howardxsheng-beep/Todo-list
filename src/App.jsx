@@ -1,23 +1,22 @@
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 
 import Todo from "./pages/Todo";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 
-
-function App() {
-
-
+export default function App() {
   return (
     <Routes>
-      <Route path='/' element={ <Todo/> } />
-      <Route path='/register' element={ <Register/> } />
-      <Route path='/login' element={ <Login/> } />
+      <Route element={<PublicOnlyRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
 
-      <Route path="*" element={<Navigate to="/login" replace />} />
-
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<Todo />} />
+      </Route>
     </Routes>
-  )
+  );
 }
-
-export default App
