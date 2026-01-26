@@ -16,18 +16,6 @@ export default function Todo() {
     const token = Cookies.get("token");
     const nickname = Cookies.get("nickname") || "使用者";
     const navigate = useNavigate();
-
-
-    if (!token) return <Navigate to="/login" replace />;
-
-    const handleLogout = () => {
-        Cookies.remove("token");
-        Cookies.remove("nickname");
-        Cookies.remove("exp");
-        navigate("/login");
-    };
-
-
     const {
 
         tab,
@@ -56,6 +44,16 @@ export default function Todo() {
         handleDelete,
         handleToggle,
     } = useTodoActions();
+
+
+    const handleLogout = () => {
+        Cookies.remove("token");
+        Cookies.remove("nickname");
+        Cookies.remove("exp");
+        navigate("/login");
+    };
+
+
 
 
     return (
