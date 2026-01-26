@@ -19,7 +19,7 @@ export default function TodoCreateForm({
       <button
         type="submit"
         disabled={disabled}
-        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-[10px] bg-black text-white flex justify-center items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-[10px] bg-black text-white flex justify-center items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="新增待辦"
       >
         <img src={plus} alt="" className="w-5 h-5" />

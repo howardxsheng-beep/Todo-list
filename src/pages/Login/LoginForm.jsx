@@ -13,10 +13,10 @@ export default function LoginForm({
 }) {
   return (
     <section className="w-full max-w-[312px] mx-auto md:max-w-[304px] md:mx-0" aria-label="Login form">
-      <div className="flex items-center justify-center gap-2 mb-4 md:mb-9">
+      <div className="flex items-center justify-center gap-2 mb-5.5 md:mb-9">
         <div className="md:hidden flex items-center">
           <img src={check} alt="Todo list logo" className="w-10 aspect-square" />
-          <h1 className="text-[28px] md:text-[32px] font-bold font-baloo">ONLINE TODO LIST</h1>
+          <h1 className="text-[32px] font-bold font-baloo">ONLINE TODO LIST</h1>
         </div>
       </div>
 
@@ -55,9 +55,9 @@ export default function LoginForm({
 
         {formMsg ? <p className=" text-warning text-sm font-bold">{formMsg}</p> : null}
 
-        <button
+        <button 
           type="submit"
-          className="mx-auto text-base font-bold text-white rounded-[10px] bg-black py-3 px-12 text-center mt-4.5 mb-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mx-auto text-base font-bold text-white rounded-[10px] bg-black py-3 px-12 text-center mt-3.75 mb-3 md:mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
           {isLoading ? "登入中" : "登入"}

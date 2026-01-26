@@ -45,7 +45,7 @@ export default function TodoListSection({
             ))}
           </ul>
 
-          <div className="px-4 py-6 md:mb-2 text-sm font-bold">
+          <div className="px-4 py-6 md:mb-2 text-sm ">
             {activeCount} 個待完成項目
           </div>
         </>

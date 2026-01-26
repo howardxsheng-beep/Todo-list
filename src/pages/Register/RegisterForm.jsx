@@ -19,15 +19,15 @@ export default function RegisterForm({
   onGoLogin,
 }) {
   return (
-    <section className="w-full max-w-[312px] mx-auto md:max-w-[304px] md:mx-0" aria-label="Register form">
-      <div className="flex items-center justify-center gap-2 mb-4 md:mb-0">
+    <section className="w-full max-w-78 mx-auto md:max-w-76 md:mx-0" aria-label="Register form">
+      <div className="flex items-center justify-center gap-2 mb-5.5 md:mb-0">
         <div className="md:hidden flex items-center">
           <img src={check} alt="Todo list logo" className="w-10 aspect-square" />
-          <h1 className="text-[28px] md:text-[32px] font-bold font-baloo">ONLINE TODO LIST</h1>
+          <h1 className="text-[32px] font-bold font-baloo">ONLINE TODO LIST</h1>
         </div>
       </div>
 
-      <p className="text-xl font-bold text-center mb-6.5 md:mb-6 md:text-2xl md:text-start">
+      <p className="text-2xl font-bold text-center mb-6.5 md:mb-6 md:text-2xl md:text-start">
         註冊帳號
       </p>
 
@@ -94,7 +94,7 @@ export default function RegisterForm({
         <button
           type="submit"
           disabled={isLoading}
-          className="mx-auto text-base font-bold text-white rounded-[10px] bg-black py-2.5 px-12 text-center mt-2.5 mb-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mx-auto text-base font-bold text-white rounded-[10px] bg-black py-2.5 px-12 text-center -mt-px mb- cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? "註冊中..." : "註冊帳號"}
         </button>
