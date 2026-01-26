@@ -6,7 +6,7 @@ export default function LoginVisual() {
     <section className="hidden md:flex flex-col justify-center" aria-label="Login visual">
       <div className="flex justify-center items-center mb-[21px]">
         <img src={check} alt="Todo list logo" className="w-10 aspect-square" />
-        <h1 className="md:text-[32px] font-bold font-baloo">ONLINE TODO LIST</h1>
+        <h1 className="text-[32px] md:text-[32px] font-bold font-baloo">ONLINE TODO LIST</h1>
       </div>
 
       <img
