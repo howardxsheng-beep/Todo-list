@@ -8,11 +8,6 @@ import AuthedLoginGuard from "./AuthedLoginGuard";
 
 export default function Login() {
   const navigate = useNavigate();
-  const token = Cookies.get("token");
-
-
-  if (token) return <AuthedLoginGuard seconds={3} />;
-
 
   const {
     email,
